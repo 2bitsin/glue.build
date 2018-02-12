@@ -13,6 +13,13 @@ namespace glue::lvl2
 			api(const api&) = default;
 			api& operator = (const api&) = default;
 			api() = default;
+ 
+			template<typename _Ctype, decltype(std::data(std::declval<_Ctype>())) = nullptr,
+																decltype(std::size(std::declval<_Ctype>())) = 0u>
+			auto uniform(uniform_location_t loc, const _Ctype& values) const
+			{
+				return uniform(loc, (std::int32_t)std::size(values), std::data(values));
+			}
 		public:
 		};
 	}
