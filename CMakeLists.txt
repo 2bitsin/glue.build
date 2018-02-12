@@ -1,0 +1,26 @@
+cmake_minimum_required (VERSION 3.10)
+project (glue CXX)
+add_definitions(-D_SCL_SECURE_NO_WARNINGS)
+if (${CMAKE_SIZEOF_VOID_P} EQUAL "8")
+    set (PROJECTNAME_ARCHITECTURE "x64")
+else ()
+    set (PROJECTNAME_ARCHITECTURE "x86")
+endif ()
+
+include_directories ("${CMAKE_CURRENT_SOURCE_DIR}/include")
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+file(GLOB_RECURSE GLUE_SOURCE "." "${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp")
+file(GLOB_RECURSE GLUE_HEADER "." "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp")
+file(GLOB_RECURSE GLUE_TEST_SOURCE "." "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.*")
+
+add_library(glue ${GLUE_SOURCE} ${GLUE_HEADER})
+add_executable(glue_tests ${GLUE_TEST_SOURCE})
+target_link_libraries(glue_tests glue)
+
+install(TARGETS glue glue_tests EXPORT glue 
+  RUNTIME DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/install/bin/${PROJECTNAME_ARCHITECTURE}"
+  LIBRARY DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/install/lib/${PROJECTNAME_ARCHITECTURE}"
+  ARCHIVE DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/install/lib/${PROJECTNAME_ARCHITECTURE}"
+  INCLUDES DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/install/includes")
